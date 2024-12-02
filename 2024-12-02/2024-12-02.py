@@ -41,9 +41,8 @@ if __name__ == '__main__':
     level_difference_bad = [[j for j, value in enumerate(item) if value not in [-3, -2, -1, 1, 2, 3]] for item in
                             level_difference]
 
-    # We may act on any measurement by removing any level at position i, for some 0<=i<=len(measurement)-1.
-
-    # Acting on a measurement at position j implies introducing a new level difference, unless i==0 or i==len(measurement)-1:
+    # We may act on any measurement by removing any level at position j, for some 0<=j<=len(measurement)-1.
+    # Acting on a measurement at position j implies introducing a new level difference, unless j==0 or j==len(measurement)-1:
     possible_actions = [[
                             # The result of not acting at all on the measurement is the same as
                             # the measurement being called "safe" in Task 1:
