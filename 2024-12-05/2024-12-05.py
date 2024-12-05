@@ -12,16 +12,6 @@ def read_input_file(file):
                 page_numbers.append([int(x) for x in line.replace('\n','').split(",")])
     return ordering_rules, page_numbers
 
-def transitive_closure(a):
-    closure = set(a)
-    while True:
-        new_relations = set((x,w) for x,y in closure for q,w in closure if q == y)
-        closure_until_now = closure | new_relations
-        if closure_until_now == closure:
-            break
-        closure = closure_until_now
-    return closure
-
 def are_ordering_rules_violated(chosen, ordering_rules):
     violations = [o for o in ordering_rules if o[0] in chosen and o[1] in chosen if chosen.index(o[0]) > chosen.index(o[1])]
     return violations
