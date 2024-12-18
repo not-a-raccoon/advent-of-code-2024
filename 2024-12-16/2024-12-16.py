@@ -68,7 +68,7 @@ def neighbours(matrix, x, y, orientation):
     return result
 
 
-def dijkstra(matrix, start_col, start_row, start_orientation, end_col, end_row):
+def dijkstra(matrix, start_col, start_row):
     queue = []
     predecessors = {}
     distance = {}
@@ -101,7 +101,7 @@ if __name__ == "__main__":
     matrix, start_col, start_row, end_col, end_row = read_input_file(input_file)
     assert start_col and end_col and start_row and end_row
 
-    d, p = something_like_dijkstra(matrix, start_col, start_row, ">", end_col, end_row)
+    d, p = dijkstra(matrix, start_col, start_row)
 
     goals = [(end_col, end_row, orientation) for orientation in directions_map.keys()]
     r = [d.get(g, math.inf) for g in goals]
