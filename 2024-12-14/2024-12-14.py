@@ -83,5 +83,5 @@ if __name__ == "__main__":
     for i in lowest_keys:
         print(f"Task 2, after {i} iterations:")
         print_board(step(robots, i, board_width, board_height), board_width, board_height)
-        
+
     # Now have a look at the printouts visually. Increase "whatever" if necessary.
