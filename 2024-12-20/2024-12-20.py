@@ -92,27 +92,38 @@ def task1(matrix, path, threshold: int):
     return result, max_saved
 
 
-# Note: you should really use a more efficent data structure for "path", but it works for the input data (path of length ~10000).
-def get_cheating_targets_in_range(matrix, x, y, path, range: int, threshold: int):
+# For task 2:
+# We are optimizing here by grouping the tiles from "path" into "path_grouped" so that
+# only (potentially) relevant ones will have to be checked.
+def get_cheating_targets_in_range(matrix, x, y, path_grouped, cheat_length: int, threshold: int):
     # the number of steps saved is matrix[ny][nx] - matrix[y][x] - abs(ny-y) - abs(nx-x),
     # because even though cheating takes a shortcut in the path, the moves
     # done while cheating still count as regular moves.
-    t = [[ny, nx, int(matrix[ny][nx]) - int(matrix[y][x]) - abs(ny - y) - abs(nx - x)] for ny, nx in path if
-         abs(ny - y) + abs(nx - x) <= range]
-    return [tt for tt in t if tt[2] >= threshold]
+    t = 0
+    for path in [path_grouped.get(s) for s in path_grouped.keys() if x + y - cheat_length <= s <= x + y + cheat_length]:
+        t += len([[ny, nx, int(matrix[ny][nx]) - int(matrix[y][x]) - abs(ny - y) - abs(nx - x)]
+                  for ny, nx in path
+                  if abs(ny - y) + abs(nx - x) <= cheat_length
+                  and int(matrix[ny][nx]) - int(matrix[y][x]) - abs(ny - y) - abs(nx - x) >= threshold])
+    return t
 
 
-def task2(matrix, path, range: int, threshold: int):
+def task2(matrix, path, cheat_length: int, threshold: int):
     result = 0
     max_saved = 0
-    for p in path:
-        c = get_cheating_targets_in_range(matrix, p[1], p[0], path=path, range=range, threshold=threshold)
-        result += len(c)
-        if len(c) > 0:
-            ms = max([cc[2] for cc in c])
-            if ms >= max_saved:
-                max_saved = ms
-    return result, max_saved
+
+    path_grouped = {}
+    for y, x in path:
+        if (x + y) in path_grouped.keys():
+            path_grouped[(x + y)].append([y, x])
+        else:
+            path_grouped[(x + y)] = [[y, x]]
+    print(f"Paths grouped by x+y. There are {len(path_grouped)} groups.")
+
+    for y, x in path:
+        result += get_cheating_targets_in_range(matrix, x, y, path_grouped, cheat_length=cheat_length,
+                                                threshold=threshold)
+    return result
 
 
 if __name__ == "__main__":
@@ -134,7 +145,7 @@ if __name__ == "__main__":
 
     # Task 2: still only one single "cheating" move is allowed, but it can have any length <= 20
     threshold = 100
-    range = 20
-    r, s = task2(matrix, path, range, threshold)
-    print(f"Task 2: {r} different options for cheating moves of length <= {range} that "
-          f"save at least {threshold} steps each. The best of these saves {s} steps.")
+    cheat_length = 20
+    r = task2(matrix, path, cheat_length, threshold)
+    print(f"Task 2: {r} different options for cheating moves of length <= {cheat_length} that "
+          f"save at least {threshold} steps each.")
